@@ -42,25 +42,25 @@ namespace BloodBankWebAPI.Controllers
             return Ok();
         }
 
-        [HttpGet("srearch")]
-        public ActionResult<IEnumerable<GetDonorDto>> SearchDonor(string search)
-        {
-            IEnumerable<GetDonorDto> donors = _donorRepository.GetAllDonors();
+        //[HttpGet("srearch")]
+        //public ActionResult<IEnumerable<GetDonorDto>> SearchDonor(string search)
+        //{
+        //    IEnumerable<GetDonorDto> donors = _donorRepository.GetAllDonors();
 
-            donors = donors.Where(i => i.FirstName.ToLower().Contains(search.ToLower()) ||
-                                  i.LastName.ToLower().Contains(search.ToLower()) ||
-                                  i.Age.ToString().Contains(search) ||
-                                  i.Gender.ToLower().Contains(search.ToLower()) ||
-                                  i.BloodType.ToLower().Contains(search.ToLower()) ||
-                                  i.FirstName.ToLower().Contains(search.ToLower()) ||
-                                  i.HealthStatus.ToLower().Contains(search.ToLower()));
-            if (!donors.Any())
-            {
-                throw new NotFoundException("Record not found");
+        //    donors = donors.Where(i => i.FirstName.ToLower().Contains(search.ToLower()) ||
+        //                          i.LastName.ToLower().Contains(search.ToLower()) ||
+        //                          i.Age.ToString().Contains(search) ||
+        //                          i.Gender.ToLower().Contains(search.ToLower()) ||
+        //                          i.BloodType.ToLower().Contains(search.ToLower()) ||
+        //                          i.FirstName.ToLower().Contains(search.ToLower()) ||
+        //                          i.HealthStatus.ToLower().Contains(search.ToLower()));
+        //    if (!donors.Any())
+        //    {
+        //        throw new NotFoundException("Record not found");
 
-            }
-            return Ok(donors);
-        }
+        //    }
+        //    return Ok(donors);
+        //}
 
     }
 }

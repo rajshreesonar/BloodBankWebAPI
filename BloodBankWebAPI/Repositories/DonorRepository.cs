@@ -3,6 +3,7 @@ using BloodBankWebAPI.Contexts;
 using BloodBankWebAPI.Dtos.AddDtos;
 using BloodBankWebAPI.Dtos.GetDtos;
 using BloodBankWebAPI.Dtos.UpdateDtos;
+using BloodBankWebAPI.Middlewares;
 using BloodBankWebAPI.Models;
 using BloodBankWebAPI.Repositories.IRepository;
 
@@ -22,6 +23,11 @@ namespace BloodBankWebAPI.Repositories
         public void AddDonor(AddDonorDto addDonor)
         {
             var map=_mapper.Map<Donor>(addDonor);
+            var age = DateTime.Now.Year - addDonor.Dob.Year;
+            if ((int)age <= 18)
+            {
+                throw new BadRequestException("Age must be greater than 18");
+            }
             _context.Donor.Add(map);
             _context.SaveChanges();
         }
