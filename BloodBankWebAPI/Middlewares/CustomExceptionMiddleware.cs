@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Serilog;
+using Serilog.Context;
 using System.Text.Json;
 
 namespace BloodBankWebAPI.Middlewares
@@ -12,7 +14,6 @@ namespace BloodBankWebAPI.Middlewares
             {
                 appError.Run(async context =>
                 {
-
                     context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                     context.Response.ContentType = "application/json";
 
@@ -25,7 +26,7 @@ namespace BloodBankWebAPI.Middlewares
                             BadRequestException => StatusCodes.Status400BadRequest,
                             _ =>StatusCodes.Status500InternalServerError
                         };
-
+                        Log.Error(contextFeature.Error.Message);
                         await context.Response.WriteAsync(new ErrorDetails()
                         {
                             StatusCode = context.Response.StatusCode,

@@ -9,6 +9,7 @@
         public string BloodType { get; set; }
         public string Contact { get; set; }
         public string HealthStatus { get; set; }
+        public IFormFile adharUpload { get; set; }
 
     }
 }

@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using Serilog;
 
 namespace BloodBankWebAPI
 {
@@ -17,6 +18,16 @@ namespace BloodBankWebAPI
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            //######## Serilog code
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies().Where(p => !p.IsDynamic));
+            var logger = new LoggerConfiguration()
+                        .ReadFrom.Configuration(builder.Configuration)
+                        .Enrich.FromLogContext()
+                        .CreateLogger();
+
+            builder.Logging.ClearProviders();
+            builder.Logging.AddSerilog(logger);
 
             // Add services to the container.
 
@@ -52,8 +63,8 @@ namespace BloodBankWebAPI
                     });
 
             builder.Services.AddDbContext<BloodBankContext>(option=> option.UseSqlServer(builder.Configuration.GetConnectionString("defaultConnection")));
-            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies().Where(p => !p.IsDynamic));
-
+           
+            builder.Services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddScoped<IDonorRepository, DonorRepository>();
             builder.Services.AddScoped<IRecipientRepository, RecipientRepository>();
             builder.Services.AddScoped<IHospitalRepository, HospitalRepository>();
@@ -76,7 +87,7 @@ namespace BloodBankWebAPI
             app.UseAuthorization();
 
             //    app.UseMiddleware<CustomExceptionMiddleware>();
-           
+           app.UseMiddleware<LoggerMiddleware>();
             app.MapControllers();
 
             app.Run();

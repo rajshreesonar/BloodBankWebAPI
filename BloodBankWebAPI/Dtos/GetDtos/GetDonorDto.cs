@@ -11,5 +11,6 @@
         public string Contact { get; set; }
         public DateTime LastDonationDate { get; set; }
         public string HealthStatus { get; set; }
+        //public IFormFile adharCard { get; set; }
     }
 }

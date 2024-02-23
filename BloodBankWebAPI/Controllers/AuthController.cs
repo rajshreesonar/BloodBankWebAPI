@@ -94,7 +94,6 @@ namespace BloodBankWebAPI.Controllers
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id+""),
                 new Claim(ClaimTypes.Name, user.userName)
-
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
