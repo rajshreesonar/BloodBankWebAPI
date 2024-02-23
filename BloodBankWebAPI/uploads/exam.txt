@@ -1,0 +1,38 @@
+CREATE TABLE State(
+		StateID int identity(1,1) PRIMARY key,
+		StateAb varchar(5),
+		StateName varchar(30)
+
+);
+
+
+CREATE TABLE Artist(
+		ID INT  IDENTITY(1,1) PRIMARY KEY,
+		FirstName varchar(20),
+		LastName varchar(20),
+		BirthDate date,
+		DeathDate date default Null,
+		Commission int,
+		Street varchar(max),
+		City varchar(20),
+		StateAb varchar(5),
+		StateID int ,
+		ZipCode varchar(20),
+
+		foreign key(StateID) references State
+);
+
+CREATE TABLE ArtWork(
+		ID int,
+		ArtID int IDENTITY(1,1) PRIMARY KEY,
+		Title varchar(30),
+		CreationDate Date,
+		AcquisitionDate Date,
+		Price bigint,
+		Form varchar(20)
+
+		FOREIGN KEY(ID)  REFERENCES Artist
+);
+
+
+
