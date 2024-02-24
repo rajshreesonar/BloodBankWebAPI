@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using BloodBankWebAPI.Contexts;
 using BloodBankWebAPI.Dtos.AddDtos;
 using BloodBankWebAPI.Dtos.GetDtos;
 using BloodBankWebAPI.Dtos.UpdateDtos;
@@ -18,25 +19,49 @@ namespace BloodBankWebAPI.Controllers
         private readonly IDonorRepository _donorRepository;
         private readonly ILogger<DonorController> _logger;
         private readonly IHttpContextAccessor _contextAccessor;
+        private readonly BloodBankContext _context;
 
 
-        public DonorController(IDonorRepository donorRepository, ILogger<DonorController> logger, IHttpContextAccessor contextAccessor)
+        public DonorController(IDonorRepository donorRepository, ILogger<DonorController> logger, IHttpContextAccessor contextAccessor, BloodBankContext context)
         {
             _donorRepository = donorRepository;
             _logger = logger;
             _contextAccessor = contextAccessor;
+            _context = context;
         }
 
         [HttpPost("AddDonor"), Authorize]
 
         public IActionResult AddDonor(AddDonorDto addDonor)
-        {
+        { 
           //  LogContext.PushProperty("AdminName", _contextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name));
          //   Serilog.Log.Information("Donor added");
+            
             //mapp addDonorDto to Donor
             _donorRepository.AddDonor(addDonor);
             return Ok();
         }
+
+        //[HttpGet("GenerateDonorCertificate")]
+        //public byte[] GenerateCertificate(int id)
+        //{
+        //    Donor donor= _context.Donor.Where(i=>i.Id == id).FirstOrDefault();
+
+        //    if (donor != null) 
+        //    {
+        //        var data = new PdfDocument();
+
+        //        string htmlContent = "<div style = 'margin: 20px auto; max-width: 600px; padding: 20px; border: 1px solid #ccc; background-color: #FFFFFF; font-family: Arial, sans-serif;' >";
+        //        htmlContent += "<div style = 'margin-bottom: 20px; text-align: center;'>";
+        //        htmlContent += "<img src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROnYPD5QO8ZJvPQt8ClnJNPXduCeX89dSOxA&usqp=CAU' alt = 'School Logo' style = 'max-width: 100px; margin-bottom: 10px;' >";
+        //        htmlContent += "</div>";
+        //    }
+
+
+
+
+
+        //}
 
         [HttpGet("GetDonors")]
         public ActionResult<IEnumerable<GetDonorDto>> GetDonors()
