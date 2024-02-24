@@ -14,10 +14,19 @@ namespace BloodBankWebAPI.Controllers
     {
         private readonly IDonationRepository _donationRepository;
 
-        public DonationController(IDonationRepository donationRepository) 
+        public DonationController(IDonationRepository donationRepository)
         {
             _donationRepository = donationRepository;
         }
+        [HttpGet]
+        public ActionResult<IEnumerable<GetDonationDto>> GetDonations()
+        {
+            var donations = _donationRepository.GetDonations();
+            return Ok(donations);
+        }
+
+       // [HttpGet]
+        //public ActionResult GetDonationsPdf(int id) { }
 
         [HttpPost("AddDonation"),Authorize]
         public IActionResult AddDonations(AddDonationDto addDonation)
@@ -33,12 +42,8 @@ namespace BloodBankWebAPI.Controllers
             return Ok();
         }
 
-        [HttpGet]
-        public ActionResult<IEnumerable<GetDonationDto>> GetDonations() 
-        {
-            var donations =  _donationRepository.GetDonations();
-            return Ok(donations);
-        }
+        
+
 
     }
 

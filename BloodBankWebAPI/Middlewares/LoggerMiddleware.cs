@@ -15,6 +15,8 @@ namespace BloodBankWebAPI.Middlewares
         public async Task InvokeAsync(HttpContext context)
         {
             var loggedUser= context.User.FindFirstValue(ClaimTypes.Name);
+
+       //     LogContext.PushProperty("AdminName", context.User.FindFirstValue(ClaimTypes.Name) ?? "System");
             if (loggedUser != null)
             {
                 LogContext.PushProperty("AdminName", loggedUser);              
@@ -23,6 +25,8 @@ namespace BloodBankWebAPI.Middlewares
             {
                 LogContext.PushProperty("AdminName", "System");
             }
+            LogContext.PushProperty("MethodType", context.Request.Method);
+            LogContext.PushProperty("MethodPath", context.Request.Path);
             await _requestDelegate(context);
 
 

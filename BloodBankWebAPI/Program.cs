@@ -83,13 +83,11 @@ namespace BloodBankWebAPI
             }
             app.ConfigureExceptionHandler();
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
 
             //    app.UseMiddleware<CustomExceptionMiddleware>();
-           app.UseMiddleware<LoggerMiddleware>();
+            app.UseMiddleware<LoggerMiddleware>();
             app.MapControllers();
-
             app.Run();
         }
     }
