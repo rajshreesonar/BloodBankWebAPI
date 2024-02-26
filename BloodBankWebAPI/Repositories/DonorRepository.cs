@@ -6,6 +6,7 @@ using BloodBankWebAPI.Dtos.UpdateDtos;
 using BloodBankWebAPI.Middlewares;
 using BloodBankWebAPI.Models;
 using BloodBankWebAPI.Repositories.IRepository;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 
 namespace BloodBankWebAPI.Repositories
@@ -73,11 +74,12 @@ namespace BloodBankWebAPI.Repositories
             return map;
         }
 
-        public void UpdateDonor(UpdateDonorDto updateDonor)
+        public void UpdateDonor([FromForm]UpdateDonorDto updateDonor)
         {
           //  var donor= _context.Donor.FirstOrDefault(i=>i.Id == updateDonor.Id);
             var map= _mapper.Map<Donor>(updateDonor);
             _context.Donor.Update(map);
+            new CustomLog().CreateLog(_context);
             _context.SaveChanges();
         }
 

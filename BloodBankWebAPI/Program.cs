@@ -87,6 +87,7 @@ namespace BloodBankWebAPI
 
             //    app.UseMiddleware<CustomExceptionMiddleware>();
             app.UseMiddleware<LoggerMiddleware>();
+         
             app.MapControllers();
             app.Run();
         }

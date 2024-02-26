@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BloodBankWebAPI.Models
@@ -10,6 +11,7 @@ namespace BloodBankWebAPI.Models
     //    [ForeignKey("Donation")]
         public int DonationId { get; set; }
         public Donation Donation { get; set; }
+        [Required]
         public string BloodType { get; set; }
         public int Quantity { get; set; }
         public DateTime? ExpiryDate { get; set; }

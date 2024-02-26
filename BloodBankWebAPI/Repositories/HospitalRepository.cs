@@ -3,6 +3,7 @@ using BloodBankWebAPI.Contexts;
 using BloodBankWebAPI.Dtos.AddDtos;
 using BloodBankWebAPI.Dtos.GetDtos;
 using BloodBankWebAPI.Dtos.UpdateDtos;
+using BloodBankWebAPI.Middlewares;
 using BloodBankWebAPI.Models;
 using BloodBankWebAPI.Repositories.IRepository;
 using Microsoft.AspNetCore.Mvc;
@@ -31,6 +32,7 @@ namespace BloodBankWebAPI.Repositories
         {
             var map = _mapper.Map<Hospital>(updateHospital);
             _context.Hospital.Update(map);
+            new CustomLog().CreateLog(_context);
             _context.SaveChanges();
         }
 

@@ -11,5 +11,7 @@
         public string Contact { get; set; }
         //     public DateTime LastDonationDate { get; set; } = DateTime.Now;
         public string HealthStatus { get; set; }
+
+
     }
 }
