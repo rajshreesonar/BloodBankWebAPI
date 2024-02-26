@@ -21,9 +21,10 @@ namespace BloodBankWebAPI.Controllers
         private readonly IDonationRepository _donationRepository;
         private readonly BloodBankContext _context;
 
-        public DonationController(IDonationRepository donationRepository)
+        public DonationController(IDonationRepository donationRepository, BloodBankContext context)
         {
             _donationRepository = donationRepository;
+            _context = context;
         }
         [HttpGet]
         public ActionResult<IEnumerable<GetDonationDto>> GetDonations()
@@ -59,18 +60,18 @@ namespace BloodBankWebAPI.Controllers
             var data = new PdfDocument();
 
             string htmlContent = "<div style = 'margin: 20px auto; max-width: 600px; padding: 20px; border: 1px solid #ccc; background-color: #FFFFFF; font-family: Arial, sans-serif;' >\r\n    " +
-                "<div>\r\n<div style = 'text-align: center;'>\r\n<img src = 'https://media.istockphoto.com/id/1624291952/vector/medical-health-logo-design-illustration.jpg?s=612x612&w=0&k=20&c=RdOq1SRcWwS_12_c5Zg2_QOUz1GD-YwGvfRodtOPN5w=' height='190px' width='200px' >\r\n</div>\r\n" +
-                "<p style = 'margin: 0;color: #52bb07;font-size: 20px;margin-bottom: 6px;' >Samved Hospital</p>\r\n" +
-                "<p style = 'margin: 0;' > 3rd floor, cross road complex,</p>\r\n<p style = 'margin: 0;margin-bottom: 6px;' >below bansri hospital, Amroli, Surat</p>\r\n" +
-                "<p style = 'margin: 0;margin-bottom: 6px;' > Phone: +91 98758 65784 </p>\r\n<p style = 'margin: 0;' > Gujarat </p>\r\n</div>\r\n" +
-                "<div style = 'text-align: center; margin-bottom: 20px;'>\r\n<h1 style='color: #094549;'> Appointment Report </h1>\r\n</div>\r\n<table style = 'width: 100%; border-collapse: collapse;'>\r\n<tbody>\r\n<tr style = 'color: #2398a0;font-size: 16px' >\r\n<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' > Patient </td>\r\n<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' > Appoint Doctor </td>\r\n<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' > Doctor Speciality </td>\r\n" +
-                "<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' > Disease </td>\r\n<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' > Appoint DateTime </td>\r\n<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' > Status </td>\r\n<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' > Appoint DateTime </td>\r\n<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' > IsDeleted </td>\r\n</tr>\r\n";
+                "<div>\r\n<div style = 'text-align: center;'>\r\n<img src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaG00j90EO8AuLHCqx8mD9qMRNo1Bb5HwfxeMw3Fe3_JPkkkcdN26Fv0QlDhoBAfE_WrE&usqp=CAU' height='190px' width='200px' >\r\n</div>" +
+                "<div style = 'text-align: center; margin-bottom: 20px;'>\r\n<h1 style='color: #094549;'> Donations Report </h1>\r\n</div>\r\n<table style = 'width: 100%; border-collapse: collapse;'>\r\n<tbody>\r\n<tr style = 'color: #2398a0;font-size: 16px' >\r\n<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' > DonationID </td>\r\n<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' > Donor Name </td>\r\n<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' > Donation Quantity </td>\r\n" +
+                "<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' > BloodType </td>\r\n<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' >  Donation DateTime </td></tr>";
 
             for (int i = 0; i < donations.Count(); i++)
             {
-                htmlContent += "<tr>\r\n<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' > " + donations.ElementAt(i).Donor.FirstName + " " + donations.ElementAt(i).Donor.LastName + " </td>\r\n";
-                htmlContent += "<tr>\r\n<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' > " + donations.ElementAt(i).Donor.FirstName + " " + donations.ElementAt(i).Donor.LastName + " </td>\r\n";
-                htmlContent += "<tr>\r\n<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' > " + donations.ElementAt(i).Donor.FirstName + " " + donations.ElementAt(i).Donor.LastName + " </td>\r\n";
+                htmlContent += "<tr>\r\n";
+                htmlContent += "<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' > " + donations.ElementAt(i).ID + "</td>\r\n";
+                htmlContent += "<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' > " + donations.ElementAt(i).Donor.FirstName + " " + donations.ElementAt(i).Donor.LastName + " </td>\r\n";
+                htmlContent += "<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' > " + donations.ElementAt(i).Quantity_ML+ " </td>\r\n";
+                htmlContent += "<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' > " + donations.ElementAt(i).BloodType+" </td>\r\n";
+                htmlContent += "<td style = 'padding: 8px; text-align: left; border-bottom: 1px solid #ddd;' > " + donations.ElementAt(i).DonationDate + " </td>\r\n</tr>";
             }
             htmlContent += "</tbody></table></div>";
 

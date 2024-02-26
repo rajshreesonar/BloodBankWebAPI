@@ -1,0 +1,9 @@
+{
+  "firstName": "Raj",
+  "lastName": "Sonar",
+  "age": 20,
+  "gender": "Male",
+  "bloodType": "B+",
+  "contact": "11111111",
+  "healthStatus": "Healthy"
+}
