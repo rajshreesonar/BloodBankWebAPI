@@ -12,6 +12,6 @@ namespace BloodBankWebAPI.Models
         public DateTime DonationDate { get; set; }   
         public string BloodType {  get; set; }
         public int Quantity_ML { get; set;}
-
+                                                
     }
 }
