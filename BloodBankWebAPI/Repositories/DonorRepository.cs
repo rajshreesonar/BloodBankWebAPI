@@ -8,6 +8,7 @@ using BloodBankWebAPI.Models;
 using BloodBankWebAPI.Repositories.IRepository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.EntityFrameworkCore;
 
 namespace BloodBankWebAPI.Repositories
 {
@@ -53,11 +54,11 @@ namespace BloodBankWebAPI.Repositories
             _context.SaveChanges();
         }
 
-        public IEnumerable<GetDonorDto> GetAllDonors()
+        public async Task<IEnumerable<GetDonorDto>> GetAllDonors()
         {
             
-            var allDonors = _context.Donor.ToList();
-            var map = _mapper.Map<IEnumerable<GetDonorDto>>(allDonors);
+            var allDonors = await _context.Donor.ToListAsync();
+           
 
             //foreach (var item in allDonors)
             //{
@@ -71,7 +72,7 @@ namespace BloodBankWebAPI.Repositories
             //}
             
 
-            return map;
+            return allDonors;
         }
 
         public void UpdateDonor([FromForm]UpdateDonorDto updateDonor)

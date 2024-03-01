@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using AutoMapper;
 using BloodBankWebAPI.Contexts;
 using BloodBankWebAPI.Dtos.AddDtos;
 using BloodBankWebAPI.Dtos.GetDtos;
@@ -26,12 +27,14 @@ namespace BloodBankWebAPI.Controllers
         private readonly ILogger<DonorController> _logger;
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly BloodBankContext _context;
-        public DonorController(IDonorRepository donorRepository, ILogger<DonorController> logger, IHttpContextAccessor contextAccessor, BloodBankContext context)
+        private readonly IMapper _mapper;
+        public DonorController(IDonorRepository donorRepository, ILogger<DonorController> logger, IHttpContextAccessor contextAccessor, BloodBankContext context, IMapper mapper)
         {
             _donorRepository = donorRepository;
             _logger = logger;
             _contextAccessor = contextAccessor;
             _context = context;
+            _mapper = mapper;
         }
 
         [HttpPost("AddDonor"), Authorize]
@@ -79,12 +82,13 @@ namespace BloodBankWebAPI.Controllers
             
         }
         [HttpGet("GetDonors")]
-        public ActionResult<IEnumerable<GetDonorDto>> GetDonors()
+        public async Task<ActionResult<IEnumerable<GetDonorDto>>> GetDonors()
         {
             _logger.LogInformation("seri log is working");
-            var donors = _donorRepository.GetAllDonors();
+            var donors = await _donorRepository.GetAllDonors();
+            var map = _mapper.Map<IEnumerable<GetDonorDto>>(donors);
             _logger.LogWarning("seri log is existing");
-            return Ok(donors);
+            return Ok(map);
         }
 
         [HttpGet]
