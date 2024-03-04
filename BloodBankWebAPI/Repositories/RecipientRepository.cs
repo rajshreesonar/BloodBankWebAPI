@@ -6,6 +6,7 @@ using BloodBankWebAPI.Dtos.UpdateDtos;
 using BloodBankWebAPI.Middlewares;
 using BloodBankWebAPI.Models;
 using BloodBankWebAPI.Repositories.IRepository;
+using Microsoft.EntityFrameworkCore;
 
 namespace BloodBankWebAPI.Repositories
 {
@@ -39,9 +40,9 @@ namespace BloodBankWebAPI.Repositories
             _context.Recipient.Update(map);
             _context.SaveChanges();
         }
-        public IEnumerable<GetRecipientDto> GetAllRecipients()
+        public async Task<IEnumerable<GetRecipientDto>> GetAllRecipients()
         {
-            var allRecipient = _context.Recipient.ToList();
+            var allRecipient =  await _context.Recipient.ToListAsync();
             var map = _mapper.Map<IEnumerable<GetRecipientDto>>(allRecipient);
             return map;
         }
