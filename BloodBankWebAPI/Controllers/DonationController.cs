@@ -27,20 +27,19 @@ namespace BloodBankWebAPI.Controllers
             _context = context;
         }
         [HttpGet]
-        public ActionResult<IEnumerable<GetDonationDto>> GetDonations()
+        public async Task<IActionResult> GetDonations()
         {
-            var donations = _donationRepository.GetDonations();
+            var donations = await _donationRepository.GetDonations();
             return Ok(donations);
         }
 
        // [HttpGet]
         //public ActionResult GetDonationsPdf(int id) { }
 
-        [HttpPost("AddDonation"),Authorize]
-        public IActionResult AddDonations(AddDonationDto addDonation)
+        [HttpPost("AddDonation")]
+        public async Task<IActionResult> AddDonations(AddDonationDto addDonation)
         {
-            _donationRepository.AddDonation(addDonation);
-            return Ok();
+            return Ok(await _donationRepository.AddDonation(addDonation));
         }
 
         [HttpPut("UpdateDonation"),Authorize]

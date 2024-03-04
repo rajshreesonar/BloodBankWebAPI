@@ -34,17 +34,17 @@ namespace BloodBankWebAPI.Repositories
             await _context.SaveChangesAsync();     
             return map.Id;
         }
-        public void UpdateRecipient(UpdateRecipientDto UpdateRecipient) 
+        public void UpdateRecipient(Recipient UpdateRecipient) 
         {
-            var map = _mapper.Map<Recipient>(UpdateRecipient);
-            _context.Recipient.Update(map);
+           // var map = _mapper.Map<Recipient>(UpdateRecipient);
+            _context.Recipient.Update(UpdateRecipient);
             _context.SaveChanges();
         }
-        public async Task<IEnumerable<GetRecipientDto>> GetAllRecipients()
+        public async Task<IEnumerable<Recipient>> GetAllRecipients()
         {
             var allRecipient =  await _context.Recipient.ToListAsync();
-            var map = _mapper.Map<IEnumerable<GetRecipientDto>>(allRecipient);
-            return map;
+          //  var map = _mapper.Map<IEnumerable<GetRecipientDto>>(allRecipient);
+            return allRecipient;
         }
     }
 }

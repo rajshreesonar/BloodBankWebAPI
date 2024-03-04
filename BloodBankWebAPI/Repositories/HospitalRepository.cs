@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Runtime.CompilerServices;
+using AutoMapper;
 using BloodBankWebAPI.Contexts;
 using BloodBankWebAPI.Dtos.AddDtos;
 using BloodBankWebAPI.Dtos.GetDtos;
@@ -7,6 +8,7 @@ using BloodBankWebAPI.Middlewares;
 using BloodBankWebAPI.Models;
 using BloodBankWebAPI.Repositories.IRepository;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BloodBankWebAPI.Repositories
 {
@@ -21,24 +23,24 @@ namespace BloodBankWebAPI.Repositories
             _mapper = mapper;
         }
 
-        public void AddHospital(AddHospitalDto addHospital)
+        public async Task<int> AddHospital(AddHospitalDto addHospital)
         {
             var map = _mapper.Map<Hospital>(addHospital);
-            _context.Hospital.Add(map);
-            _context.SaveChanges(); 
+            await _context.Hospital.AddAsync(map);  
+            return await _context.SaveChangesAsync(); 
         }
 
-        public void UpdateHospital(UpdateHospitalDto updateHospital)
+        public async Task<int> UpdateHospital(UpdateHospitalDto updateHospital)
         {
             var map = _mapper.Map<Hospital>(updateHospital);
             _context.Hospital.Update(map);
             new CustomLog().CreateLog(_context);
-            _context.SaveChanges();
+            return await _context.SaveChangesAsync();
         }
 
-        public IEnumerable<GetHospitalDto> GetHospitals()
+        public async Task<IEnumerable<GetHospitalDto>> GetHospitals()
         {
-            var hospitals = _context.Hospital.ToList();
+            var hospitals = await _context.Hospital.ToListAsync();
             var map = _mapper.Map<IEnumerable<GetHospitalDto>>(hospitals);
             return map;
         }

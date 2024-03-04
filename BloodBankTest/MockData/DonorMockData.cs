@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using BloodBankWebAPI.Dtos.AddDtos;
 using BloodBankWebAPI.Dtos.GetDtos;
 using BloodBankWebAPI.Models;
 
@@ -25,6 +26,26 @@ namespace BloodBankTest.MockData
                    BloodType= "O+",
                    Contact= "99033443321",
                    LastDonationDate= DateTime.Now,
+                   HealthStatus= "Healthy"
+                }
+            };
+
+            return donorList;
+        }
+
+        public static async Task<IEnumerable<AddDonorDto>> AddMockDonors()
+        {
+            var donorList = new List<AddDonorDto>()
+            {
+                new AddDonorDto()
+                {
+                   FirstName= "Rajshree",
+                   LastName= "Sonar",
+                   Dob= DateTime.Now,
+                   Gender= "Female",
+                   BloodType= "O+",
+                   Contact= "99033443321",
+                 //  LastDonationDate= DateTime.Now,
                    HealthStatus= "Healthy"
                 }
             };

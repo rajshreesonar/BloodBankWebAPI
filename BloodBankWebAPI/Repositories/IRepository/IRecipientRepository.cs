@@ -8,8 +8,8 @@ namespace BloodBankWebAPI.Repositories.IRepository
     public interface IRecipientRepository
     {
         Task<int> AddRecipient(AddRecipientDto addRecipient);
-        void UpdateRecipient(UpdateRecipientDto Updaterecipient);
-        Task<IEnumerable<GetRecipientDto>> GetAllRecipients();
+        void UpdateRecipient(Recipient Updaterecipient);
+        Task<IEnumerable<Recipient>> GetAllRecipients();
 
     }
 }

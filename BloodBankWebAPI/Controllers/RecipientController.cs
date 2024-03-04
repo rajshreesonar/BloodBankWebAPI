@@ -1,6 +1,8 @@
-﻿using BloodBankWebAPI.Dtos.AddDtos;
+﻿using AutoMapper;
+using BloodBankWebAPI.Dtos.AddDtos;
 using BloodBankWebAPI.Dtos.GetDtos;
 using BloodBankWebAPI.Dtos.UpdateDtos;
+using BloodBankWebAPI.Models;
 using BloodBankWebAPI.Repositories;
 using BloodBankWebAPI.Repositories.IRepository;
 using Microsoft.AspNetCore.Authorization;
@@ -17,12 +19,14 @@ namespace BloodBankWebAPI.Controllers
         private readonly IRecipientRepository _recipientRepository;
         private readonly IBloodInventoryRepository _inventoryRepository;
         private readonly ITransfusionRepository _transfusionRepository;
+        private readonly IMapper _mapper;
 
-        public RecipientController(IRecipientRepository recipientRepository, IBloodInventoryRepository bloodInventoryRepository, ITransfusionRepository transfusionRepository)
+        public RecipientController(IRecipientRepository recipientRepository, IBloodInventoryRepository bloodInventoryRepository, ITransfusionRepository transfusionRepository, IMapper mapper)
         {
             _recipientRepository = recipientRepository;
             _inventoryRepository = bloodInventoryRepository;
             _transfusionRepository = transfusionRepository;
+            _mapper = mapper;
         }
         [HttpPost("AddRecipient"),Authorize]
         public async Task<IActionResult> AddRecipient(AddRecipientDto addRecipient)
@@ -50,15 +54,18 @@ namespace BloodBankWebAPI.Controllers
         [HttpPut("UpdateRecipient"),Authorize]
         public IActionResult UpdateRecipient(UpdateRecipientDto updateRecipient)
         {
-            _recipientRepository.UpdateRecipient(updateRecipient);
+            var map = _mapper.Map<Recipient>(updateRecipient);
+            _recipientRepository.UpdateRecipient(map);
             return Ok();
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<GetRecipientDto>>> GetRecipient()
+        public async Task<IActionResult> GetRecipient()
         {
             var recipients = await _recipientRepository.GetAllRecipients();
-            return Ok(recipients);
+            var map = _mapper.Map<GetRecipientDto>(recipients);
+
+            return Ok(map);
         }
 
         //[HttpGet("srearch")]

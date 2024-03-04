@@ -22,7 +22,7 @@ namespace BloodBankWebAPI.Repositories
             _context = context;
             _mapper = mapper;
         }
-        public void AddDonor(AddDonorDto addDonor)
+        public async Task<int> AddDonor(AddDonorDto addDonor)
         {
             var map=_mapper.Map<Donor>(addDonor);
 
@@ -40,7 +40,6 @@ namespace BloodBankWebAPI.Repositories
                 {
                     addDonor.adharUpload.CopyToAsync(stream);
                 }
-
                 map.FilePath = filePath;
             }
 
@@ -50,8 +49,8 @@ namespace BloodBankWebAPI.Repositories
             {
                 throw new BadRequestException("Age must be greater than 18");
             }
-            _context.Donor.Add(map);
-            _context.SaveChanges();
+            await _context.Donor.AddAsync(map);
+            return await _context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Donor>> GetAllDonors()
