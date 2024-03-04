@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using BloodBankWebAPI.Dtos.AddDtos;
 
 namespace BloodBankWebAPI.Models
 {
@@ -12,6 +13,10 @@ namespace BloodBankWebAPI.Models
         public DateTime DonationDate { get; set; }   
         public string BloodType {  get; set; }
         public int Quantity_ML { get; set;}
-                                                
+
+        public static implicit operator Donation(AddDonationDto v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

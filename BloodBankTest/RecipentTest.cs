@@ -1,32 +1,93 @@
-﻿using BloodBankTest.MockData;
+﻿using AutoMapper;
+using BloodBankTest.MockData;
+using BloodBankWebAPI.Contexts;
 using BloodBankWebAPI.Controllers;
+using BloodBankWebAPI.Dtos.AddDtos;
+using BloodBankWebAPI.Dtos.GetDtos;
+using BloodBankWebAPI.Models;
 using BloodBankWebAPI.Repositories.IRepository;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Moq;
+using SixLabors.ImageSharp.Processing;
 
 namespace BloodBankTest
 {
     public class RecipentTest
     {
-        //public void testGetAPI()
-        //{
-        //    var recipientMockRepo = new Mock<IRecipientRepository>();
-        //    recipientMockRepo.Setup(i => i.GetAllRecipients()).Returns(RecipientMockData.GetMockRecipient);
+        [Fact]
+        public async void testGetAPI()
+        {
+            var recipientMockRepo = new Mock<IRecipientRepository>();
+            recipientMockRepo.Setup(i => i.GetAllRecipients()).Returns(RecipientMockData.GetMockRecipient);
 
-        //    RecipientController recipientController = new RecipientController(recipientMockRepo.Object, new Mock<IBloodInventoryRepository>().Object, new Mock<ITransfusionRepository>().Object);
+            RecipientController recipientController = new RecipientController(recipientMockRepo.Object, new Mock<IBloodInventoryRepository>().Object, new Mock<ITransfusionRepository>().Object,new Mock<IMapper>().Object);
 
-        //    var data = recipientController.GetRecipient();
+            var data = await recipientController.GetRecipient();
 
-        //    // Assert.NotNull(data);
+            var result = data as ObjectResult;
+            Assert.Equal(200, result.StatusCode);
+        }
+        [Fact]
+        public async void AddRecipientTest()
+        {
+            AddRecipientDto addRecipientDto = new AddRecipientDto()
+            {
+                FirstName = "shree",
+                LastName = "Patel",
+                DOB = DateTime.Now,
+                Gender = "Female",
+                BloodType = "O+",
+                Quantity = 200,
+                Contact = "99033443321",
+                HospitalId = 1,
+            };
 
-        //    //// Check if data is of type ObjectResult
-        //    //if (data is ObjectResult result)
-        //    //{
-        //    //    Assert.Equal(200, result.StatusCode);
-        //    //}
-        //    var result = data as Object;
-        //    Assert.Equal(200, result);
+            AddTransfusionDto addTransfusionDto = new AddTransfusionDto()
+            {
+                RecipientId = 1,
+                TransfusionDate = DateTime.Now,
+                Quantity=200,
+                HospitalId= 2
+            };
+            GetBloodInventoryDto getBloodInventoryDto = new GetBloodInventoryDto()
+            {
+                Id = 1,
+                BloodType="O+",
+                Quantity = 400,
+                ExpiryDate= DateTime.Now,
+            };
+            var recipientMockRepo = new Mock<IRecipientRepository>();
+            recipientMockRepo.Setup(i => i.AddRecipient(addRecipientDto));
 
-        //}
+            var transfusionMockRepo = new Mock<ITransfusionRepository>();
+            transfusionMockRepo.Setup(i => i.AddTransfusion(addTransfusionDto));
+
+            var inventoryMockRepo = new Mock<IBloodInventoryRepository>();
+            inventoryMockRepo.Setup(i => i.GetBloodInventories());
+
+
+            RecipientController recipientController = new RecipientController(recipientMockRepo.Object,inventoryMockRepo.Object, transfusionMockRepo.Object, new Mock<IMapper>().Object);
+
+            var data = await recipientController.AddRecipient(addRecipientDto);
+
+            var result = data as ObjectResult;
+            Assert.NotNull(data);
+
+
+
+
+
+
+
+
+
+
+
+
+
+        }
     }
 }

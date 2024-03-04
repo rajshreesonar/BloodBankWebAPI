@@ -36,14 +36,14 @@ namespace BloodBankWebAPI.Controllers
         }
 
         [HttpPost("AddDonor"), Authorize]
-        public IActionResult AddDonor(AddDonorDto addDonor)
+        public async Task<IActionResult> AddDonor(AddDonorDto addDonor)
         {
             //  LogContext.PushProperty("AdminName", _contextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name));
             //   Serilog.Log.Information("Donor added");
 
             //mapp addDonorDto to Donor
-            _donorRepository.AddDonor(addDonor);
-            return Ok();
+             
+            return Ok(await _donorRepository.AddDonor(addDonor));
         }
 
         [HttpGet("GenerateDonorCertificate")]
@@ -90,7 +90,7 @@ namespace BloodBankWebAPI.Controllers
         }
 
         [HttpGet]
-        public IActionResult DownloadFile(string fileName)
+        public async Task<IActionResult> DownloadFile(string fileName)
         {
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "uploads\\", fileName);
             var provider = new FileExtensionContentTypeProvider();
@@ -98,7 +98,7 @@ namespace BloodBankWebAPI.Controllers
             {
                 contentType = "application/octet-stream";
             }
-            var bytes = System.IO.File.ReadAllBytes(filePath);
+            var bytes = await System.IO.File.ReadAllBytesAsync(filePath);
             return File(bytes, contentType, Path.GetFileName(filePath));
         }
 

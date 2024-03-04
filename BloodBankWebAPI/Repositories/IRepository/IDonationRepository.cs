@@ -7,9 +7,9 @@ namespace BloodBankWebAPI.Repositories.IRepository
 {
     public interface IDonationRepository
     {
-        void AddDonation(AddDonationDto donation);
+        Task<int> AddDonation(AddDonationDto donation);
         void UpdateDonation(UpdateDonationDto donation);
-        IEnumerable<GetDonationDto> GetDonations();
+        Task<IEnumerable<GetDonationDto>> GetDonations();
       //  byte[] GetDonationPdf();
     }
 }

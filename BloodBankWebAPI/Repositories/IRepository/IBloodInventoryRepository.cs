@@ -6,8 +6,8 @@ namespace BloodBankWebAPI.Repositories.IRepository
 {
     public interface IBloodInventoryRepository
     {
-        void AddBloodInventory(AddBloodInventoryDto addBloodInventory);
+        Task<int> AddBloodInventory(AddBloodInventoryDto addBloodInventory);
         void UpdateBloodInventory(UpdateBloodInventoryDto updateBloodInventory);
         IEnumerable<GetBloodInventoryDto> GetBloodInventories();
-    }
+    }   
 }

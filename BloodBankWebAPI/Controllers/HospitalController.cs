@@ -21,23 +21,21 @@ namespace BloodBankWebAPI.Controllers
         }
 
         [HttpPost("AddHospital"),Authorize]
-        public IActionResult AddHospital(AddHospitalDto addHospital)
+        public async Task<IActionResult> AddHospital(AddHospitalDto addHospital)
         {
-            _hospitalRepository.AddHospital(addHospital);
-            return Ok();
+            return Ok(await _hospitalRepository.AddHospital(addHospital));
         }
 
         [HttpPut("UpdateHospital"),Authorize]
-        public IActionResult UpdateHospital(UpdateHospitalDto updateHospital)
+        public async Task<IActionResult> UpdateHospital(UpdateHospitalDto updateHospital)
         {
-            _hospitalRepository.UpdateHospital(updateHospital);
-            return Ok();
+            return Ok(await _hospitalRepository.UpdateHospital(updateHospital));
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<GetHospitalDto>> GetHospitals()
+        public async Task<IActionResult> GetHospitals()
         {
-            var hospitals=_hospitalRepository.GetHospitals();
+            var hospitals= await _hospitalRepository.GetHospitals();
             return Ok(hospitals);
         }
     }

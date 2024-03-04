@@ -22,14 +22,14 @@ namespace BloodBankWebAPI.Repositories
             _inventoryRepository = bloodInventory;
         }
 
-        public void AddDonation(AddDonationDto addDonation)
+        public async Task<int> AddDonation(AddDonationDto addDonation)
         {
             var map= _mapper.Map<Donation>(addDonation);
-            _context.Donation.Add(map);
-            _context.SaveChanges();
-            
+            await _context.Donation.AddAsync(map);
+            _context.SaveChangesAsync();
+
             var donation = _context.Donation.OrderBy(item => item.ID).LastOrDefault();
-           
+    
             AddBloodInventoryDto addBloodInventory = new AddBloodInventoryDto();
 
             addBloodInventory.DonationId = donation.ID;
@@ -37,7 +37,10 @@ namespace BloodBankWebAPI.Repositories
             addBloodInventory.BloodType = donation.BloodType;
             addBloodInventory.ExpiryDate = donation.DonationDate.AddDays(5);
 
-            _inventoryRepository.AddBloodInventory(addBloodInventory);
+            return await _inventoryRepository.AddBloodInventory(addBloodInventory);
+
+
+
         }
         public void UpdateDonation(UpdateDonationDto updateDonation)
         {
@@ -45,9 +48,9 @@ namespace BloodBankWebAPI.Repositories
             _context.Donation.Update(map);
             _context.SaveChanges();
         }
-        public IEnumerable<GetDonationDto> GetDonations()
+        public async Task<IEnumerable<GetDonationDto>> GetDonations()   
         {
-            var donations= _context.Donation.Include(i=>i.Donor).ToList();
+            var donations= await _context.Donation.Include(i=>i.Donor).ToListAsync();
             var map = _mapper.Map<IEnumerable<GetDonationDto>>(donations);
             return map;
         }

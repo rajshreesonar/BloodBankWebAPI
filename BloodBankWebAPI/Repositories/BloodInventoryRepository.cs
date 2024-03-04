@@ -21,14 +21,13 @@ namespace BloodBankWebAPI.Repositories
         {
             _context = context;
             _mapper = mapper;
-            
         }
 
-        public void AddBloodInventory(AddBloodInventoryDto addBloodInventory)
+        public async Task<int> AddBloodInventory(AddBloodInventoryDto addBloodInventory)
         {
             var map= _mapper.Map<BloodInventory>(addBloodInventory);
-            _context.BloodInventorie.Add(map);
-            _context.SaveChanges();
+            await _context.BloodInventorie.AddAsync(map);
+            return await _context.SaveChangesAsync();
         }
 
         public void UpdateBloodInventory(UpdateBloodInventoryDto updateBloodInventory)

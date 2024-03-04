@@ -6,11 +6,9 @@ namespace BloodBankWebAPI.Repositories.IRepository
 {
     public interface IHospitalRepository
     {
-        void AddHospital(AddHospitalDto addHospital);
-
-        void UpdateHospital(UpdateHospitalDto updateHospital);
-
-        IEnumerable<GetHospitalDto> GetHospitals();
+        Task<int> AddHospital(AddHospitalDto addHospital);
+        Task<int> UpdateHospital(UpdateHospitalDto updateHospital);
+        Task<IEnumerable<GetHospitalDto>> GetHospitals();
 
 
     }
