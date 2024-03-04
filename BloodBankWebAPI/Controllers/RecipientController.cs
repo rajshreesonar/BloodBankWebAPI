@@ -55,9 +55,9 @@ namespace BloodBankWebAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<GetRecipientDto>> GetRecipient()
+        public async Task<ActionResult<IEnumerable<GetRecipientDto>>> GetRecipient()
         {
-            var recipients = _recipientRepository.GetAllRecipients();
+            var recipients = await _recipientRepository.GetAllRecipients();
             return Ok(recipients);
         }
 

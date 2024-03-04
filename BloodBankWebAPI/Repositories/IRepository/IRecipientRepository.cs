@@ -9,7 +9,7 @@ namespace BloodBankWebAPI.Repositories.IRepository
     {
         Task<int> AddRecipient(AddRecipientDto addRecipient);
         void UpdateRecipient(UpdateRecipientDto Updaterecipient);
-        IEnumerable<GetRecipientDto> GetAllRecipients();
+        Task<IEnumerable<GetRecipientDto>> GetAllRecipients();
 
     }
 }

@@ -54,7 +54,7 @@ namespace BloodBankWebAPI.Repositories
             _context.SaveChanges();
         }
 
-        public async Task<IEnumerable<GetDonorDto>> GetAllDonors()
+        public async Task<IEnumerable<Donor>> GetAllDonors()
         {
             
             var allDonors = await _context.Donor.ToListAsync();
@@ -80,7 +80,7 @@ namespace BloodBankWebAPI.Repositories
           //  var donor= _context.Donor.FirstOrDefault(i=>i.Id == updateDonor.Id);
             var map= _mapper.Map<Donor>(updateDonor);
             _context.Donor.Update(map);
-            new CustomLog().CreateLog(_context);
+          //  new CustomLog().CreateLog(_context);
             _context.SaveChanges();
         }
 

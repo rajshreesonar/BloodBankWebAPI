@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using AutoMapper;
+﻿using AutoMapper;
 using BloodBankWebAPI.Contexts;
 using BloodBankWebAPI.Dtos.AddDtos;
 using BloodBankWebAPI.Dtos.GetDtos;
@@ -14,7 +13,6 @@ using Microsoft.AspNetCore.StaticFiles;
 using PdfSharpCore;
 
 using PdfSharpCore.Pdf;
-using Serilog.Context;
 using TheArtOfDev.HtmlRenderer.PdfSharp;
 
 namespace BloodBankWebAPI.Controllers
@@ -39,10 +37,10 @@ namespace BloodBankWebAPI.Controllers
 
         [HttpPost("AddDonor"), Authorize]
         public IActionResult AddDonor(AddDonorDto addDonor)
-        { 
-          //  LogContext.PushProperty("AdminName", _contextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name));
-         //   Serilog.Log.Information("Donor added");
-            
+        {
+            //  LogContext.PushProperty("AdminName", _contextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name));
+            //   Serilog.Log.Information("Donor added");
+
             //mapp addDonorDto to Donor
             _donorRepository.AddDonor(addDonor);
             return Ok();
@@ -61,7 +59,7 @@ namespace BloodBankWebAPI.Controllers
                 htmlContent += "<div style = 'margin-bottom: 20px; text-align: center;'>";
                 htmlContent += "<img src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaG00j90EO8AuLHCqx8mD9qMRNo1Bb5HwfxeMw3Fe3_JPkkkcdN26Fv0QlDhoBAfE_WrE&usqp=CAU' alt = 'Blood Logo' style = 'max-width: 150px; margin-bottom: 10px;' >";
                 htmlContent += "</div>";
-                htmlContent += "<p style='font-size:40px;'> sir/smt./Kum " + donor.FirstName + " " + donor.LastName + " has donated 200ml blood at the Blood Donation Drive,Organized on Date "+donor.LastDonationDate+" by the Rakt-Dan Mahadan Charitable trust </p>";
+                htmlContent += "<p style='font-size:40px;'> sir/smt./Kum " + donor.FirstName + " " + donor.LastName + " has donated 200ml blood at the Blood Donation Drive,Organized on Date " + donor.LastDonationDate + " by the Rakt-Dan Mahadan Charitable trust </p>";
                 //htmlContent += "<p> Name:"+donor.FirstName +" "+donor.LastName+"</p>";
                 //htmlContent += "<p> Name:" + donor.BloodType + " " + "</p>";
                 //htmlContent += "<p> Name:" + donor.LastDonationDate +"</p>";
@@ -79,20 +77,20 @@ namespace BloodBankWebAPI.Controllers
             }
             return NotFound();
 
-            
+
         }
         [HttpGet("GetDonors")]
-        public async Task<ActionResult<IEnumerable<GetDonorDto>>> GetDonors()
+        public async Task<IActionResult> GetDonors()
         {
-            _logger.LogInformation("seri log is working");
+            //_logger.LogInformation("seri log is working");
             var donors = await _donorRepository.GetAllDonors();
             var map = _mapper.Map<IEnumerable<GetDonorDto>>(donors);
-            _logger.LogWarning("seri log is existing");
+            //_logger.LogWarning("seri log is existing");
             return Ok(map);
         }
 
         [HttpGet]
-        public   IActionResult DownloadFile(string fileName)
+        public IActionResult DownloadFile(string fileName)
         {
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "uploads\\", fileName);
             var provider = new FileExtensionContentTypeProvider();
@@ -116,7 +114,7 @@ namespace BloodBankWebAPI.Controllers
         {
             try
             {
-                IEnumerable<GetDonorDto> donors = _donorRepository.GetAllDonors();
+                IEnumerable<GetDonorDto> donors = (IEnumerable<GetDonorDto>)_donorRepository.GetAllDonors();
 
                 donors = donors.Where(i => i.FirstName.ToLower().Contains(search.ToLower()) ||
                                       i.LastName.ToLower().Contains(search.ToLower()) ||
