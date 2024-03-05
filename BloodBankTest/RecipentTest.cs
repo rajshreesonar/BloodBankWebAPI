@@ -4,6 +4,7 @@ using BloodBankWebAPI.Contexts;
 using BloodBankWebAPI.Controllers;
 using BloodBankWebAPI.Dtos.AddDtos;
 using BloodBankWebAPI.Dtos.GetDtos;
+using BloodBankWebAPI.Dtos.UpdateDtos;
 using BloodBankWebAPI.Models;
 using BloodBankWebAPI.Repositories.IRepository;
 using Microsoft.AspNetCore.Http;
@@ -68,26 +69,38 @@ namespace BloodBankTest
             var inventoryMockRepo = new Mock<IBloodInventoryRepository>();
             inventoryMockRepo.Setup(i => i.GetBloodInventories());
 
-
             RecipientController recipientController = new RecipientController(recipientMockRepo.Object,inventoryMockRepo.Object, transfusionMockRepo.Object, new Mock<IMapper>().Object);
 
             var data = await recipientController.AddRecipient(addRecipientDto);
 
             var result = data as ObjectResult;
             Assert.NotNull(data);
+        }
 
+        [Fact]
+        public async void UpdateTest()
+        {
+            UpdateRecipientDto updateRecipientDto = new UpdateRecipientDto()
+            {
+                FirstName = "shree",
+                LastName = "Patel",
+                DOB = DateTime.Now,
+                Gender = "Female",
+                BloodType = "O+",
+                Quantity = 200,
+                Contact = "99033443321",
+                HospitalId = 1,
+            };
 
+            var recipientMockRepo= new Mock<IRecipientRepository>();
+         //   recipientMockRepo.Setup(i => i.UpdateRecipient(updateRecipientDto));
 
+            RecipientController recipientController = new RecipientController(recipientMockRepo.Object, new Mock<IBloodInventoryRepository>().Object, new Mock<ITransfusionRepository>().Object, new Mock<IMapper>().Object);
 
-
-
-
-
-
-
-
-
-
+            var data = recipientController.UpdateRecipient(updateRecipientDto);
+            var result = data as ObjectResult;
+            Assert.NotNull(data);
+            Assert.Equal(200,result.StatusCode);
         }
     }
 }
