@@ -1,6 +1,7 @@
 ﻿using BloodBankWebAPI.Dtos.AddDtos;
 using BloodBankWebAPI.Dtos.GetDtos;
 using BloodBankWebAPI.Dtos.UpdateDtos;
+using BloodBankWebAPI.Models;
 
 namespace BloodBankWebAPI.Repositories.IRepository
 {
@@ -8,6 +9,6 @@ namespace BloodBankWebAPI.Repositories.IRepository
     {
         Task<int> AddBloodInventory(AddBloodInventoryDto addBloodInventory);
         void UpdateBloodInventory(UpdateBloodInventoryDto updateBloodInventory);
-        IEnumerable<GetBloodInventoryDto> GetBloodInventories();
+        Task<IEnumerable<BloodInventory>> GetBloodInventories();
     }   
 }

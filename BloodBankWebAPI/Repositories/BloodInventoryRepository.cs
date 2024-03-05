@@ -37,11 +37,11 @@ namespace BloodBankWebAPI.Repositories
             _context.SaveChanges();
         }
 
-        public IEnumerable<GetBloodInventoryDto> GetBloodInventories()
+        public async Task<IEnumerable<BloodInventory>> GetBloodInventories()
         {
             var bloodInventories= _context.BloodInventorie.Include(i => i.Donation).ThenInclude(i=>i.Donor).ToList();
-            var map = _mapper.Map<IEnumerable<GetBloodInventoryDto>>(bloodInventories);
-            return map;
+            
+            return bloodInventories;
         }
 
 

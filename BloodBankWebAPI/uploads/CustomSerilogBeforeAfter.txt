@@ -1,0 +1,110 @@
+CustomLog class-----------------------
+using LibraryManagementAPIDemo.Contexts;
+using Microsoft.EntityFrameworkCore;
+using Serilog.Context;
+
+namespace LibraryManagementAPIDemo.Middleware
+{
+    public static class CustomLog
+    {
+        public static void LogObject(LibraryContext context, ILogger logger)
+        {
+            var entities = context.ChangeTracker.Entries().Where(x => x.State == EntityState.Added || x.State == EntityState.Modified).ToList();
+
+            foreach (var entity in entities)
+            {
+                LogLevel logLevel = LogLevel.Information;
+                var messageTemplate = "{Entity} Was {State}";
+
+                //using (LogContext.PushProperty("LoggingType", value: LoggingType.AuditRequestLog))
+                using (LogContext.PushProperty("BeforeObject", entity.OriginalValues.ToObject(), destructureObjects: true))
+                using (LogContext.PushProperty("AfterObject", entity.CurrentValues.ToObject(), destructureObjects: true))
+                    logger.Log(logLevel, messageTemplate, entity.Metadata.GetTableName(), entity.State.ToString());
+            }
+
+            //var entityType = entry.Entity.GetType().Name;
+            //var beforeObject = entry.State == EntityState.Modified ? JsonConvert.SerializeObject(entry.OriginalValues.ToObject()) : null;
+
+            //LogContext.PushProperty("BeforeObject", beforeObject);
+        }
+    }
+}
+============================
+Author Model Class-----------------
+using LibraryManagementAPIDemo.Dtos.UpdateDtos;
+
+namespace LibraryManagementAPIDemo.Models	
+{
+    public class Author : DateClass
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Nationality { get; set; }
+
+        public void UpdateAuthor(string? firstName, string? lastName, string? nationality)
+        {
+            Name = firstName + " " + lastName;
+            Nationality = nationality;
+        }
+    }
+}
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+AuthorController ------------------
+ [HttpPost]
+ public async Task<IActionResult> AddAuthor([FromForm] AddAuthorDto author)
+ {
+     try
+     {
+         var map = _mapper.Map<Author>(author);
+         map.Name = author.FirstName + " " + author.LastName;
+         await _authorRepository.AddAuthor(map);
+         return NoContent();
+     }
+     catch (Exception)
+     {
+         throw;
+     }
+
+ }
+ [HttpPut]
+ public async Task<IActionResult> UpdateAuthor([FromForm] UpdateAuthorDto author)
+ {
+     try
+     {
+         var existAuthor = await _authorRepository.GetAuthorById(author.Id);	
+         
+        
+         if (existAuthor != null)
+         {
+             existAuthor.UpdateAuthor(author.FirstName, author.LastName, author.Nationality);
+             //existAuthor.Name = author.FirstName + " " + author.LastName;
+             //existAuthor.Nationality = author.Nationality;
+
+             //existAuthor = _mapper.Map<Author>(author); 
+             await _authorRepository.UpdateAuthor(existAuthor);
+         }
+         //var map = 
+         return NoContent();
+     }
+     catch (Exception)
+     {
+         throw;
+     }
+ }
+==================================
+AuthorRepository--------------
+ public async Task AddAuthor(Author author)
+ {
+     await _context.Author.AddAsync(author);
+     CustomLog.LogObject(_context, _logger);
+     await _context.SaveChangesAsync();
+ }
+ public async Task UpdateAuthor(Author author)
+ {
+     //var customLog = new CustomLog();
+     //var authorEntry = _context.Entry(author);
+     _context.Author.Update(author);
+     CustomLog.LogObject(_context, _logger);
+     await _context.SaveChangesAsync();
+ }

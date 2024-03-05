@@ -1,0 +1,15 @@
+public ActionResult Index(int? id)
+{
+    /*IEnumerable<Vehicle> vehicles = _context.Vehicle.ToList();
+
+    foreach (var vehicle in vehicles)
+    {
+        vehicle.Category = _context.Category.Where(i => i.Id == vehicle.CategoryId).FirstOrDefault();
+        vehicle.ShowRoom = _context.ShowRooms.Where(i => i.Id == vehicle.ShowRoomId).FirstOrDefault();
+    }
+    if (id != null)
+    {
+        return View(_context.Vehicle.Where(s => s.CategoryId == id));
+    }
+
+    return View(_context.Vehicle);*/

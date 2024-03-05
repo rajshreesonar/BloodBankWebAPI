@@ -10,19 +10,17 @@ namespace BloodBankTest.MockData
 {
     public class HospitalMockData
     {
-        public async static Task<List<GetHospitalDto>> GetMockHospital()
+        public async static Task<List<Hospital>> GetMockHospital()
         {
-            var hospitalList = new List<GetHospitalDto>()
+            var hospitalList = new List<Hospital>()
             {
-                new GetHospitalDto()
+                new Hospital()
                 {
                     Id = 1,
                     Name = "Test",
                     Contact = 2323554
                 }
-
             };
-
             return hospitalList;
         }
     }

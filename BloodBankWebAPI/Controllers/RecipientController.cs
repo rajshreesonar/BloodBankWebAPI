@@ -41,7 +41,7 @@ namespace BloodBankWebAPI.Controllers
             addTransfusionDto.Quantity = addRecipient.Quantity;
             addTransfusionDto.HospitalId = addRecipient.HospitalId;
 
-            GetBloodInventoryDto inventory = _inventoryRepository.GetBloodInventories()
+            BloodInventory inventory = _inventoryRepository.GetBloodInventories().Result
                 .Where(i => i.BloodType.ToLower() == addRecipient.BloodType.ToLower() && i.Quantity >= addRecipient.Quantity)
                 .FirstOrDefault();
 

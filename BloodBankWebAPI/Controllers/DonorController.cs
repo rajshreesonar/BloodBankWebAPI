@@ -35,15 +35,37 @@ namespace BloodBankWebAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("AddDonor"), Authorize]
+        [HttpPost("AddDonor")]
         public async Task<IActionResult> AddDonor(AddDonorDto addDonor)
         {
             //  LogContext.PushProperty("AdminName", _contextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name));
             //   Serilog.Log.Information("Donor added");
 
-            //mapp addDonorDto to Donor
-             
-            return Ok(await _donorRepository.AddDonor(addDonor));
+            var map = _mapper.Map<Donor>(addDonor);
+            if (addDonor.adharUpload is not null)
+            {
+                var directoryPath = Directory.GetCurrentDirectory() + "\\uploads";
+
+                if (!Directory.Exists(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+                var filePath = Path.Combine(directoryPath, addDonor.adharUpload.FileName);
+
+                using (var stream = new FileStream(filePath, FileMode.CreateNew, FileAccess.ReadWrite))
+                {
+                    addDonor.adharUpload.CopyToAsync(stream);
+                }
+                map.FilePath = filePath;
+            }
+
+            var age = DateTime.Now.Year - addDonor.Dob.Year;
+            if ((int)age <= 18)
+            {
+                throw new BadRequestException("Age must be greater than 18");
+            }
+            
+            return Ok(await _donorRepository.AddDonor(map));
         }
 
         [HttpGet("GenerateDonorCertificate")]
@@ -103,10 +125,10 @@ namespace BloodBankWebAPI.Controllers
         }
 
         [HttpPut("UpdateDonor"), Authorize]
-        public IActionResult UpdateDonor(UpdateDonorDto updateDonor)
+        public async Task<IActionResult> UpdateDonor(UpdateDonorDto updateDonor)
         {
-            _donorRepository.UpdateDonor(updateDonor);
-            return Ok();
+            var map = _mapper.Map<Donor>(updateDonor);
+            return Ok(await _donorRepository.UpdateDonor(map));
         }
 
         [HttpGet("srearch")]

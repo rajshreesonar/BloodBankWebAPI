@@ -15,34 +15,36 @@ namespace BloodBankWebAPI.Repositories
     public class HospitalRepository: IHospitalRepository
     {
         private readonly BloodBankContext _context;
-        private readonly IMapper _mapper;
+        private readonly ILogger<IHospitalRepository> _logger;
 
-        public HospitalRepository(BloodBankContext context,IMapper mapper) 
+        public HospitalRepository(BloodBankContext context, ILogger<IHospitalRepository> logger)
         {
             _context = context;
-            _mapper = mapper;
+            _logger = logger;
         }
 
-        public async Task<int> AddHospital(AddHospitalDto addHospital)
+        public async Task<int> AddHospital(Hospital addHospital)
         {
-            var map = _mapper.Map<Hospital>(addHospital);
-            await _context.Hospital.AddAsync(map);  
+            await _context.Hospital.AddAsync(addHospital);
+            CustomLog.CreateLog(_context, _logger);
             return await _context.SaveChangesAsync(); 
         }
-
-        public async Task<int> UpdateHospital(UpdateHospitalDto updateHospital)
+        public async Task<int> UpdateHospital(Hospital updateHospital)
+        {           
+            _context.Hospital.Update(updateHospital);
+            CustomLog.CreateLog(_context,_logger);
+            return await _context.SaveChangesAsync();   
+        }
+        public async Task<IEnumerable<Hospital>> GetHospitals()
         {
-            var map = _mapper.Map<Hospital>(updateHospital);
-            _context.Hospital.Update(map);
-            new CustomLog().CreateLog(_context);
-            return await _context.SaveChangesAsync();
+            var hospitals = await _context.Hospital.ToListAsync();     
+            return hospitals;
         }
 
-        public async Task<IEnumerable<GetHospitalDto>> GetHospitals()
+        public async Task<Hospital> GetHospitalById(int id)
         {
-            var hospitals = await _context.Hospital.ToListAsync();
-            var map = _mapper.Map<IEnumerable<GetHospitalDto>>(hospitals);
-            return map;
+            var hospital =await _context.Hospital.Where(i=>i.Id==id).FirstOrDefaultAsync();
+            return hospital;
         }
 
     }
