@@ -92,9 +92,22 @@ namespace BloodBankTest
                 HospitalId = 1,
             };
 
-            var recipientMockRepo= new Mock<IRecipientRepository>();
-         //   recipientMockRepo.Setup(i => i.UpdateRecipient(updateRecipientDto));
+            Recipient recipient = new Recipient()
+            {
+                Id = 10,
+                FirstName = "shree",
+                LastName = "Patel",
+                DOB = DateTime.Now,
+                Gender = "Female",
+                BloodType = "O+",
+                Quantity = 200,
+                Contact = "99033443321",
+                HospitalId = 1,
+            };
 
+            var recipientMockRepo= new Mock<IRecipientRepository>();
+            recipientMockRepo.Setup(i => i.UpdateRecipient(recipient));
+             
             RecipientController recipientController = new RecipientController(recipientMockRepo.Object, new Mock<IBloodInventoryRepository>().Object, new Mock<ITransfusionRepository>().Object, new Mock<IMapper>().Object);
 
             var data = recipientController.UpdateRecipient(updateRecipientDto);

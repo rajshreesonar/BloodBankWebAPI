@@ -1,0 +1,23 @@
+IEnumerable<Author> author = await _context.Author.ToListAsync();
+           
+int CurrentPage = pagingModel.PageNumber > 1 ? pagingModel.PageNumber : 1;
+int TotalPages = (int)Math.Ceiling(author.Count() / (double)pagingModel.PageSize);
+
+IEnumerable<Author> items = author.Skip((CurrentPage - 1) * pagingModel.PageSize)
+                                 .Take(author.Count())
+                                 .ToList();
+
+IEnumerable<GetAuthorDto> map = _mapper.Map<IEnumerable<GetAuthorDto>>(items);
+if (!map.Any())
+{
+    return null;
+}
+return map;
+
+============
+    public class PagingModel
+    {
+        public int PageNumber { get; set; } = 1;
+        public int PageSize { get; set; } = 10;
+    }
+}

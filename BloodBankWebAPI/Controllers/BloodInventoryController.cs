@@ -1,4 +1,5 @@
-﻿using BloodBankWebAPI.Dtos.GetDtos;
+﻿using AutoMapper;
+using BloodBankWebAPI.Dtos.GetDtos;
 using BloodBankWebAPI.Repositories.IRepository;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,10 +10,12 @@ namespace BloodBankWebAPI.Controllers
     public class BloodInventoryController : ControllerBase
     {
         private readonly IBloodInventoryRepository _bloodInventoryRepository;
+        private readonly IMapper _mapper;
 
-        public BloodInventoryController(IBloodInventoryRepository bloodInventoryRepository)
+        public BloodInventoryController(IBloodInventoryRepository bloodInventoryRepository, IMapper mapper)
         {
             _bloodInventoryRepository = bloodInventoryRepository;
+            _mapper = mapper;
         }
 
         //[HttpPost("AddBloodInventory")]
@@ -28,12 +31,13 @@ namespace BloodBankWebAPI.Controllers
         //    _bloodInventoryRepository.UpdateBloodInventory(updateBloodInventory);
         //    return Ok();
         //}
-
+        //  ActionResult<IEnumerable<GetBloodInventoryDto>>
         [HttpGet]
-        public ActionResult<IEnumerable<GetBloodInventoryDto>> GetBloodInventory() 
+        public async Task<IActionResult> GetBloodInventory() 
         {
-            var bloodInventories = _bloodInventoryRepository.GetBloodInventories();
-            return Ok(bloodInventories);
+            var bloodInventories = await _bloodInventoryRepository.GetBloodInventories();
+            var map = _mapper.Map<IEnumerable<GetBloodInventoryDto>>(bloodInventories);
+            return Ok(map);
         }
 
     }

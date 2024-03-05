@@ -7,7 +7,7 @@ namespace BloodBankWebAPI.Repositories.IRepository
     public interface IAdminRepository
     {
         void AddAdmin(Admin admin);
-        IEnumerable<GetAdminDto> GetAdmin();
+        Task<IEnumerable<Admin>> GetAdmin();
         IEnumerable<Admin> Login(string username);
 
         bool AleadyRegister(string username);

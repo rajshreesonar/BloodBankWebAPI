@@ -1,4 +1,5 @@
-﻿using BloodBankWebAPI.Dtos.AddDtos;
+﻿using AutoMapper;
+using BloodBankWebAPI.Dtos.AddDtos;
 using BloodBankWebAPI.Dtos.GetDtos;
 using BloodBankWebAPI.Dtos.UpdateDtos;
 using BloodBankWebAPI.Models;
@@ -14,29 +15,57 @@ namespace BloodBankWebAPI.Controllers
     public class HospitalController : ControllerBase
     {
         private readonly IHospitalRepository _hospitalRepository;
+        private readonly IMapper _mapper;
 
-        public HospitalController(IHospitalRepository hospitalRepository)
+        public HospitalController(IHospitalRepository hospitalRepository, IMapper mapper)
         {
             _hospitalRepository = hospitalRepository;
+            _mapper = mapper;
         }
 
-        [HttpPost("AddHospital"),Authorize]
+        [HttpPost("AddHospital")]
         public async Task<IActionResult> AddHospital(AddHospitalDto addHospital)
         {
-            return Ok(await _hospitalRepository.AddHospital(addHospital));
+            var map = _mapper.Map<Hospital>(addHospital);
+            return Ok(await _hospitalRepository.AddHospital(map));
         }
 
-        [HttpPut("UpdateHospital"),Authorize]
+        [HttpPut("UpdateHospital")]
         public async Task<IActionResult> UpdateHospital(UpdateHospitalDto updateHospital)
         {
-            return Ok(await _hospitalRepository.UpdateHospital(updateHospital));
+            try
+            {
+                var hospital = await _hospitalRepository.GetHospitalById(updateHospital.Id);
+                if (hospital != null)
+                {
+                    hospital.UpdateHospital(updateHospital.Name, updateHospital.Contact);
+                    await _hospitalRepository.UpdateHospital(hospital);
+                }
+                return Ok();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            //var map = _mapper.Map<Hospital>(updateHospital);
+            //return Ok(await _hospitalRepository.UpdateHospital(map));
         }
 
         [HttpGet]
         public async Task<IActionResult> GetHospitals()
         {
             var hospitals= await _hospitalRepository.GetHospitals();
-            return Ok(hospitals);
+            var map = _mapper.Map<IEnumerable<GetHospitalDto>>(hospitals);
+            return Ok(map);
+        }
+
+        [HttpGet("GetHospitalById")]
+        public async Task<IActionResult> GetHospitalById(int id)
+        {
+            var hospital = await _hospitalRepository.GetHospitalById(id);
+            var map = _mapper.Map<IEnumerable<GetHospitalDto>>(hospital);
+            return Ok(map);
         }
     }
 }

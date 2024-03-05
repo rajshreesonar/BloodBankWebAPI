@@ -22,11 +22,11 @@ namespace BloodBankWebAPI.Repositories
             _context = context;
             _mapper = mapper;
         }
-        public async Task<int> AddDonor(AddDonorDto addDonor)
+        public async Task<int> AddDonor(Donor addDonor)
         {
-            var map=_mapper.Map<Donor>(addDonor);
+            //var map=_mapper.Map<Donor>(addDonor);
 
-            if (addDonor.adharUpload is not null)
+          /*  if (addDonor.adharUpload is not null)
             {
                 var directoryPath = Directory.GetCurrentDirectory() + "\\uploads";
 
@@ -48,8 +48,8 @@ namespace BloodBankWebAPI.Repositories
             if ((int)age <= 18)
             {
                 throw new BadRequestException("Age must be greater than 18");
-            }
-            await _context.Donor.AddAsync(map);
+            }*/
+            await _context.Donor.AddAsync(addDonor);
             return await _context.SaveChangesAsync();
         }
 
@@ -57,7 +57,6 @@ namespace BloodBankWebAPI.Repositories
         {
             
             var allDonors = await _context.Donor.ToListAsync();
-           
 
             //foreach (var item in allDonors)
             //{
@@ -74,13 +73,13 @@ namespace BloodBankWebAPI.Repositories
             return allDonors;
         }
 
-        public void UpdateDonor([FromForm]UpdateDonorDto updateDonor)
+        public async Task<int> UpdateDonor([FromForm]Donor updateDonor)
         {
-          //  var donor= _context.Donor.FirstOrDefault(i=>i.Id == updateDonor.Id);
-            var map= _mapper.Map<Donor>(updateDonor);
-            _context.Donor.Update(map);
+            //  var donor= _context.Donor.FirstOrDefault(i=>i.Id == updateDonor.Id);
+            //    var map= _mapper.Map<Donor>(updateDonor);
+            _context.Donor.Update(updateDonor);
           //  new CustomLog().CreateLog(_context);
-            _context.SaveChanges();
+            return await _context.SaveChangesAsync();
         }
 
     }

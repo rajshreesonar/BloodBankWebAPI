@@ -4,6 +4,7 @@ using BloodBankWebAPI.Dtos.AddDtos;
 using BloodBankWebAPI.Dtos.GetDtos;
 using BloodBankWebAPI.Models;
 using BloodBankWebAPI.Repositories.IRepository;
+using Microsoft.EntityFrameworkCore;
 
 namespace BloodBankWebAPI.Repositories
 {
@@ -25,11 +26,10 @@ namespace BloodBankWebAPI.Repositories
             _context.SaveChanges();
         }
 
-        public IEnumerable<GetAdminDto> GetAdmin()
+        public async Task<IEnumerable<Admin>> GetAdmin()
         {
-            var admins = _context.Admin.ToList();
-            var map = _mapper.Map<IEnumerable<GetAdminDto>>(admins);
-            return map;
+            var admins = await _context.Admin.ToListAsync();
+            return admins;
         }
         public IEnumerable<Admin> Login(string username)
         {

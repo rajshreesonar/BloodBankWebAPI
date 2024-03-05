@@ -20,7 +20,7 @@ namespace BloodBankWebAPI
             var builder = WebApplication.CreateBuilder(args);
 
             //######## Serilog code
-            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies().Where(p => !p.IsDynamic));
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             var logger = new LoggerConfiguration()
                         .ReadFrom.Configuration(builder.Configuration)
                         .Enrich.FromLogContext()
@@ -63,11 +63,11 @@ namespace BloodBankWebAPI
                     });
 
             builder.Services.AddDbContext<BloodBankContext>(option=> option.UseSqlServer(builder.Configuration.GetConnectionString("defaultConnection")));
-           
+
             builder.Services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddScoped<IDonorRepository, DonorRepository>();
             builder.Services.AddScoped<IRecipientRepository, RecipientRepository>();
-            builder.Services.AddScoped<IHospitalRepository, HospitalRepository>();
+            builder.Services.AddTransient<IHospitalRepository, HospitalRepository>();
             builder.Services.AddScoped<IDonationRepository, DonationRepository>();
             builder.Services.AddScoped<IBloodInventoryRepository, BloodInventoryRepository>();
             builder.Services.AddScoped<IAdminRepository, AdminRepository>();
@@ -85,7 +85,7 @@ namespace BloodBankWebAPI
             app.UseHttpsRedirection();
             app.UseAuthorization();
 
-            //    app.UseMiddleware<CustomExceptionMiddleware>();
+                //app.UseMiddleware<CustomExceptionMiddleware>();
             app.UseMiddleware<LoggerMiddleware>();
          
             app.MapControllers();

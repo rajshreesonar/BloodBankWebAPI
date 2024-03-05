@@ -1,4 +1,5 @@
-﻿using BloodBankWebAPI.Dtos.AddDtos;
+﻿using AutoMapper;
+using BloodBankWebAPI.Dtos.AddDtos;
 using BloodBankWebAPI.Dtos.GetDtos;
 using BloodBankWebAPI.Repositories.IRepository;
 using Microsoft.AspNetCore.Http;
@@ -11,19 +12,21 @@ namespace BloodBankWebAPI.Controllers
     public class AdminController : ControllerBase
     {
         private readonly IAdminRepository _adminRepository;
+        private readonly IMapper _mapper;
 
-        public AdminController(IAdminRepository adminRepository)
+        public AdminController(IAdminRepository adminRepository, IMapper mapper)
         {
             _adminRepository = adminRepository;
+            _mapper = mapper;
         }
 
-       
-
+     //   ActionResult<IEnumerable<GetAdminDto>>
         [HttpGet]
-        public ActionResult<IEnumerable<GetAdminDto>> GetAdmin() 
+        public async Task<IActionResult> GetAdmin() 
         {
-            var admins = _adminRepository.GetAdmin();
-            return Ok(admins);
+            var admins = await _adminRepository.GetAdmin();
+            var map = _mapper.Map<IEnumerable<GetAdminDto>>(admins);
+            return Ok(map);
         }
     }
 }
