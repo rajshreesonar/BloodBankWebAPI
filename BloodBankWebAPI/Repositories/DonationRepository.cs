@@ -22,10 +22,9 @@ namespace BloodBankWebAPI.Repositories
             _inventoryRepository = bloodInventory;
         }
 
-        public async Task<int> AddDonation(AddDonationDto addDonation)
-        {
-            var map= _mapper.Map<Donation>(addDonation);
-            await _context.Donation.AddAsync(map);
+        public async Task<int> AddDonation(Donation addDonation)
+        {     
+            await _context.Donation.AddAsync(addDonation);
             _context.SaveChangesAsync();
 
             var donation = _context.Donation.OrderBy(item => item.ID).LastOrDefault();
@@ -42,17 +41,15 @@ namespace BloodBankWebAPI.Repositories
 
 
         }
-        public void UpdateDonation(UpdateDonationDto updateDonation)
+        public void UpdateDonation(Donation updateDonation)
         {
-             var map = _mapper.Map<Donation>(updateDonation);
-            _context.Donation.Update(map);
+            _context.Donation.Update(updateDonation);
             _context.SaveChanges();
         }
-        public async Task<IEnumerable<GetDonationDto>> GetDonations()   
+        public async Task<IEnumerable<Donation>> GetDonations()   
         {
-            var donations= await _context.Donation.Include(i=>i.Donor).ToListAsync();
-            var map = _mapper.Map<IEnumerable<GetDonationDto>>(donations);
-            return map;
+            var donations= await _context.Donation.Include(i=>i.Donor).ToListAsync();        
+            return donations;
         }
 
         //public byte[] GetDonationPdf()

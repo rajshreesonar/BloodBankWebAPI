@@ -19,6 +19,12 @@ namespace BloodBankTest.MockData
                     Id = 1,
                     Name = "Test",
                     Contact = 2323554
+                },
+                new Hospital()
+                {
+                    Id = 2,
+                    Name = "Test",
+                    Contact = 2323554
                 }
             };
             return hospitalList;

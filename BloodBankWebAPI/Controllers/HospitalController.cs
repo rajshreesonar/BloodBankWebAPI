@@ -2,6 +2,7 @@
 using BloodBankWebAPI.Dtos.AddDtos;
 using BloodBankWebAPI.Dtos.GetDtos;
 using BloodBankWebAPI.Dtos.UpdateDtos;
+using BloodBankWebAPI.Middlewares;
 using BloodBankWebAPI.Models;
 using BloodBankWebAPI.Repositories.IRepository;
 using Microsoft.AspNetCore.Authorization;
@@ -64,7 +65,13 @@ namespace BloodBankWebAPI.Controllers
         public async Task<IActionResult> GetHospitalById(int id)
         {
             var hospital = await _hospitalRepository.GetHospitalById(id);
-            var map = _mapper.Map<IEnumerable<GetHospitalDto>>(hospital);
+
+            if (hospital == null)
+            {
+                throw new NotFoundException("Id is not available");
+                //return BadRequest("Id is not available");
+            }
+            var map = _mapper.Map<IEnumerable<GetHospitalDto>>(hospital);  
             return Ok(map);
         }
     }
