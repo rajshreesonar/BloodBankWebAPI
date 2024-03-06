@@ -43,7 +43,11 @@ namespace BloodBankWebAPI.Repositories
 
         public async Task<Hospital> GetHospitalById(int id)
         {
-            var hospital =await _context.Hospital.Where(i=>i.Id==id).FirstOrDefaultAsync();
+            var hospital = await _context.Hospital.Where(i => i.Id == id).FirstOrDefaultAsync();
+            if (hospital == null)
+            {
+                throw new NotFoundException("Hospital not found");
+            }
             return hospital;
         }
 

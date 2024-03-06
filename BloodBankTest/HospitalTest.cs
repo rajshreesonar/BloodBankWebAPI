@@ -8,6 +8,7 @@ using BloodBankTest.MockData;
 using BloodBankWebAPI.Controllers;
 using BloodBankWebAPI.Dtos.AddDtos;
 using BloodBankWebAPI.Dtos.UpdateDtos;
+using BloodBankWebAPI.Middlewares;
 using BloodBankWebAPI.Models;
 using BloodBankWebAPI.Repositories.IRepository;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -82,6 +83,33 @@ namespace BloodBankTest
             var result = data as OkObjectResult;    
             Assert.NotNull(result);
             Assert.Equal(200, result.StatusCode);
+        }
+
+        [Fact]
+        public async void GetHospitalByIdTest()
+        {
+            var hospitalMockRepo = new Mock<IHospitalRepository>();
+            hospitalMockRepo.Setup(i => i.GetHospitalById(1)).ReturnsAsync((await HospitalMockData.GetMockHospital())[0]);
+
+            HospitalController hospitalController = new HospitalController(hospitalMockRepo.Object, new Mock<IMapper>().Object);
+
+            var data = await hospitalController.GetHospitalById(1);
+            var result = data as OkObjectResult;
+            Assert.NotNull(result);
+            Assert.Equal(200, result.StatusCode);
+        }
+
+        [Fact]
+        public async void GetHospitalById_NotFoundTest()
+        {
+            var hospitalMockRepo = new Mock<IHospitalRepository>();
+            hospitalMockRepo.Setup(i => i.GetHospitalById(4)).ReturnsAsync((Hospital)null);
+
+            HospitalController hospitalController = new HospitalController(hospitalMockRepo.Object, new Mock<IMapper>().Object);
+
+            var data = await Assert.ThrowsAsync<NotFoundException>(()=> hospitalController.GetHospitalById(4));
+         
+            Assert.Equal("Id is not available", data.Message);
         }
 
     }

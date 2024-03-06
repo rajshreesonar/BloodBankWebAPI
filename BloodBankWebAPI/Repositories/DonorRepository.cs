@@ -6,6 +6,7 @@ using BloodBankWebAPI.Dtos.UpdateDtos;
 using BloodBankWebAPI.Middlewares;
 using BloodBankWebAPI.Models;
 using BloodBankWebAPI.Repositories.IRepository;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
@@ -55,8 +56,13 @@ namespace BloodBankWebAPI.Repositories
 
         public async Task<IEnumerable<Donor>> GetAllDonors()
         {
-            
+
             var allDonors = await _context.Donor.ToListAsync();
+
+            //if (!allDonors.Any() || allDonors == null) 
+            //{
+            //    throw new NotFoundException("Donor not found.");
+            //}
 
             //foreach (var item in allDonors)
             //{

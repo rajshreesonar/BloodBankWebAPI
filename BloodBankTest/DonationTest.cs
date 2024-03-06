@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using BloodBankTest.MockData;
 using BloodBankWebAPI.Contexts;
 using BloodBankWebAPI.Controllers;
@@ -19,8 +20,15 @@ namespace BloodBankTest
     {
         AddDonationDto addDonationDto = new AddDonationDto()
         {
-            DonorId=1,
+       
             DonationDate= DateTime.Now,
+            BloodType = "B+",
+            Quantity_ML = 100,
+        };
+        Donation donation = new Donation()
+        {
+            DonorId = 1,
+            DonationDate = DateTime.Now,
             BloodType = "B+",
             Quantity_ML = 100,
         };
@@ -33,9 +41,9 @@ namespace BloodBankTest
             var contextMock = new Mock<BloodBankContext>(options);
 
             var donationMockRepo = new Mock<IDonationRepository>();
-            donationMockRepo.Setup(i => i.AddDonation(addDonationDto));
+            donationMockRepo.Setup(i => i.AddDonation(donation));
 
-            DonationController donationController = new DonationController(donationMockRepo.Object, contextMock.Object);
+            DonationController donationController = new DonationController(donationMockRepo.Object, contextMock.Object, new Mock<IMapper>().Object);
 
             var data = await donationController.AddDonations(addDonationDto);
             var result = data as ObjectResult;
@@ -53,7 +61,7 @@ namespace BloodBankTest
             var donationMockResult = new Mock<IDonationRepository>();
             donationMockResult.Setup(i => i.GetDonations()).ReturnsAsync(await DonationMockData.GetMockDonation());
 
-            DonationController donationController = new DonationController(donationMockResult.Object, contextMock.Object);
+            DonationController donationController = new DonationController(donationMockResult.Object, contextMock.Object,);
 
             var data= await donationController.GetDonations();
             var result = data as ObjectResult;
@@ -61,6 +69,21 @@ namespace BloodBankTest
             Assert.Equal(200, result.StatusCode);
         }
 
+        public async void GetDonationTest_BadRequestException()
+        {
+            var options = new DbContextOptionsBuilder<BloodBankContext>().Options;
+            var contextMock = new Mock<BloodBankContext>(options);
+
+            var donationMockResult = new Mock<IDonationRepository>();
+            donationMockResult.Setup(i => i.GetDonations()).ReturnsAsync(await DonationMockData.GetMockDonation());
+
+            DonationController donationController = new DonationController(donationMockResult.Object, contextMock.Object);
+
+            var data = await donationController.GetDonations();
+            var result = data as ObjectResult;
+            Assert.NotNull(result);
+            Assert.Equal(200, result.StatusCode);
+        }
 
     }
 }

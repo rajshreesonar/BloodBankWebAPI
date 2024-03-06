@@ -12,6 +12,7 @@ using TheArtOfDev.HtmlRenderer.PdfSharp;
 
 using PdfSharpCore.Pdf;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 namespace BloodBankWebAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -20,17 +21,20 @@ namespace BloodBankWebAPI.Controllers
     {
         private readonly IDonationRepository _donationRepository;
         private readonly BloodBankContext _context;
+        private readonly IMapper _mapper;
 
-        public DonationController(IDonationRepository donationRepository, BloodBankContext context)
+        public DonationController(IDonationRepository donationRepository, BloodBankContext context, IMapper mapper)
         {
             _donationRepository = donationRepository;
             _context = context;
+            _mapper = mapper;
         }
         [HttpGet]
         public async Task<IActionResult> GetDonations()
         {
             var donations = await _donationRepository.GetDonations();
-            return Ok(donations);
+            var map = _mapper.Map<IEnumerable<GetDonationDto>>(donations);
+            return Ok(map);
         }
 
        // [HttpGet]
@@ -39,13 +43,15 @@ namespace BloodBankWebAPI.Controllers
         [HttpPost("AddDonation")]
         public async Task<IActionResult> AddDonations(AddDonationDto addDonation)
         {
-            return Ok(await _donationRepository.AddDonation(addDonation));
+            var map = _mapper.Map<Donation>(addDonation);
+            return Ok(await _donationRepository.AddDonation(map));
         }
 
         [HttpPut("UpdateDonation"),Authorize]
         public IActionResult UpdateDonations(UpdateDonationDto updateDonation) 
-        { 
-            _donationRepository.UpdateDonation(updateDonation);
+        {
+            var map = _mapper.Map<Donation>(updateDonation);
+            _donationRepository.UpdateDonation(map);
             return Ok();
         }
 
@@ -81,6 +87,7 @@ namespace BloodBankWebAPI.Controllers
                 data.Save(ms);
                 response = ms.ToArray();
             }
+           // return Ok();
             string fileName = "DonationCertificate" + ".pdf";
             return File(response, "application/pdf", fileName);
         }

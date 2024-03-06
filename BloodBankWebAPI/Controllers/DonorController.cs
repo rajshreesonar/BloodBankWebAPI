@@ -98,8 +98,6 @@ namespace BloodBankWebAPI.Controllers
                 return File(response, "application/pdf", fileName);
             }
             return NotFound();
-
-
         }
         [HttpGet("GetDonors")]
         public async Task<IActionResult> GetDonors()
@@ -107,6 +105,12 @@ namespace BloodBankWebAPI.Controllers
             //_logger.LogInformation("seri log is working");
             var donors = await _donorRepository.GetAllDonors();
             var map = _mapper.Map<IEnumerable<GetDonorDto>>(donors);
+
+            if (!map.Any() || map == null)
+            {
+                throw new NotFoundException("Donor not found.");
+             //  return NotFound("Donors not found");
+            }
             //_logger.LogWarning("seri log is existing");
             return Ok(map);
         }
